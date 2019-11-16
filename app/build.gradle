@@ -1,0 +1,94 @@
+apply plugin: 'com.android.application'
+
+android {
+
+    //兼容阿帕奇
+    useLibrary 'org.apache.http.legacy'
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    defaultConfig {
+        applicationId "com.wkq.nvg"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // 避免"64K 引用限制"
+        multiDexEnabled true
+        // 导航SDK内部使用了annotationProcessor，需要添加下面代码，防止编译异常
+        javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
+
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
+
+    }
+
+    signingConfigs {
+
+        release {
+            storeFile file("Nvg.jks")
+            storePassword "123456"
+            keyAlias "Nvg"
+            keyPassword "123456"
+        }
+
+        debug {
+            storeFile file("Nvg.jks")
+            storePassword "123456"
+            keyAlias "Nvg"
+            keyPassword "123456"
+        }
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.debug
+        }
+    }
+    dataBinding {
+        enabled = true
+    }
+
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "com.android.support:support-v4:$rootProject.supportV4"
+    implementation "com.android.support:appcompat-v7:$rootProject.appcompatV7"
+    implementation "com.android.support:design:$rootProject.design"
+    implementation "com.android.support:support-v13:$rootProject.supportV13"
+    implementation "com.android.support:recyclerview-v7:$rootProject.recyclerviewV7"
+    implementation "com.android.support:cardview-v7:$rootProject.cardviewV7"
+    implementation "com.android.support.constraint:constraint-layout:$rootProject.constraintLayout"
+    implementation "com.android.support:multidex:$rootProject.multidex"
+    implementation files('libs/galaxy_lite_lbs_v2.2.jar')
+    implementation files('libs/galaxy_lite_v2.0.jar')
+    implementation files('libs/intellij_annotations.jar')
+    implementation files('libs/javapoet-1.9.0.jar')
+    implementation files('libs/lbsCoreSDK.jar')
+    implementation files('libs/protobuf-java-2.3.0-micro.jar')
+    implementation files('libs/req_head.jar')
+
+    implementation (name: 'onsdk_all', ext:'aar')
+    implementation (name: 'NaviTts', ext:'aar')
+}
